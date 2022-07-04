@@ -12,7 +12,7 @@ const {
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewsById);
-// app.patch("/api/reviews/:review_d", updateReview);
+app.patch("/api/reviews/:review_d", updateReview);
 
 //ERROR-HANDLING MIDDLEWARE BELOW
 
@@ -29,6 +29,7 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
+    console.log(err.msg);
   } else next(err);
 });
 

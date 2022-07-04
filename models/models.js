@@ -31,8 +31,9 @@ exports.fetchReviewVotes = (review_id, inc_votes) => {
           msg: "404: path not found",
         });
       } else {
-        console.log(review.rows);
-        // return review.rows;
+        const selectedReview = review.rows[0];
+        selectedReview.votes += Number(inc_votes);
+        return selectedReview;
       }
     });
 };
