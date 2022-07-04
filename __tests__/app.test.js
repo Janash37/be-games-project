@@ -128,5 +128,21 @@ describe("/api", () => {
           });
         });
     });
+    test("returns status 404 when the path is not found", () => {
+      return request(app)
+        .patch("/api/reviews/1000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404: path not found");
+        });
+    });
+    test("returns status 400 when a bad request is made", () => {
+      return request(app)
+        .get("/api/reviews/one")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
   });
 });
