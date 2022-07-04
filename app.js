@@ -2,19 +2,19 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
-const { getCategories } = require("./controllers/controllers");
+const { getCategories, getReviewsById } = require("./controllers/controllers");
 
 //ENDPOINT MIDDLEWARE BELOW
 
 app.get("/api/categories", getCategories);
+app.get("/api/reviews/:review_id", getReviewsById);
 
 //ERROR-HANDLING MIDDLEWARE BELOW
 
 app.use((err, req, res, next) => {
-  if (err.msg) {
-    res.status(404).send({ msg: "Invalid Path" });
-  }
-  next(err);
+  if (err.msg && err.msg) {
+    res.status(err.status).send({ msg: err.msg });
+  } else next(err);
 });
 
 app.use((err, req, res, next) => {
