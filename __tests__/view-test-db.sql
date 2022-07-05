@@ -1,3 +1,3 @@
-\c nc_games
+\c nc_games_test
 
-SELECT * FROM reviews;
+SELECT * FROM users;
