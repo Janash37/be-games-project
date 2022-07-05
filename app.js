@@ -5,6 +5,7 @@ app.use(express.json());
 const {
   getCategories,
   getReviewsById,
+  getUsers,
   updateReview,
 } = require("./controllers/controllers");
 
@@ -12,12 +13,12 @@ const {
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewsById);
+app.get("/api/users", getUsers);
 app.patch("/api/reviews/:review_d", updateReview);
 
 //ERROR-HANDLING MIDDLEWARE BELOW
 
 app.all("/*", (req, res) => {
-  console.log(err, "<<< inside invalid path error handler");
   res.status(400).send({ msg: "Invalid path" });
 });
 
