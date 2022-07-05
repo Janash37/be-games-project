@@ -218,4 +218,51 @@ describe("/api", () => {
         });
     });
   });
+  describe("GET /api/reviews", () => {
+    test("returns status 200 when a successful get request is made", () => {
+      return request(app).get("/api/reviews").expect(200);
+    });
+    test("returns status 200 and an array of review objects, each with owner, title, review_id, category, review_img_url, created_at, votes, review_body, designer and comment count properties", () => {
+      return request(app)
+        .get("/api/reviews")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.reviews).toHaveLength(13);
+          body.reviews.forEach((review) => {
+            expect(review).toEqual(
+              expect.objectContaining({
+                title: expect.any(String),
+                designer: expect.any(String),
+                owner: expect.any(String),
+                review_img_url: expect.any(String),
+                review_body: expect.any(String),
+                category: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+    test("returns status 200 and an array of review objects which are sorted in date descending order", () => {
+      return request(app)
+        .get("/api/reviews")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.reviews).toBeSortedBy("created_at", {
+            descending: true,
+            coerce: true,
+          });
+        });
+    });
+    test("returns status 400 when the path is not found", () => {
+      return request(app)
+        .get("/api/review")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid path");
+        });
+    });
+  });
 });
