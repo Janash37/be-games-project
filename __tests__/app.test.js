@@ -167,4 +167,9 @@ describe("/api", () => {
         });
     });
   });
+  describe.only("GET /api/reviews", () => {
+    test("returns status 200 when a successful get request is made", () => {
+      return request(app).get("/api/reviews").expect(200);
+    });
+  });
 });
