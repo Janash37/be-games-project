@@ -24,6 +24,13 @@ exports.fetchReviewsById = (review_id) => {
     });
 };
 
+
+exports.fetchUsers = (users) => {
+  return db.query(`SELECT * FROM users`).then((users) => {
+    return users.rows;
+  });
+};
+
 exports.patchReviewVotes = (review_id, inc_votes) => {
   return db
     .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])

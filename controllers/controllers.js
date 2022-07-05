@@ -1,6 +1,7 @@
 const {
   fetchCategories,
   fetchReviewsById,
+  fetchUsers,
   patchReviewVotes,
 } = require("../models/models");
 
@@ -21,6 +22,16 @@ exports.getReviewsById = (req, res, next) => {
       res.status(200).send({ review });
     })
     .catch(next);
+};
+
+exports.getUsers = (req, res, next) => {
+  fetchUsers()
+    .then((users) => {
+      res.status(200).send({ users });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.updateReview = (req, res, next) => {
