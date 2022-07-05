@@ -138,13 +138,41 @@ describe("/api", () => {
     });
     test("returns status 400 when a bad request is made", () => {
       return request(app)
-        .get("/api/reviews/one")
+        .patch("/api/reviews/one")
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid input");
         });
     });
-    //test error: if inc_votes is sent as a string
-    //if inc_votes is missing: either 400 or no change to database
+  });
+  describe.only("GET /api/users", () => {
+    test("returns status 200 when a successful get request is made", () => {
+      return request(app).get("/api/users").expect(200);
+    });
+    test("returns status 200 and an array of user objects, with username, name and avatar_url properties", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.users).toHaveLength(4);
+          body.users.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+    test("returns status 400 when a bad request is made", () => {
+      return request(app)
+        .get("/api/users/1")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid path");
+        });
+    });
   });
 });
