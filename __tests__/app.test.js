@@ -34,7 +34,7 @@ describe("/api", () => {
         });
     });
   });
-  describe.only("GET /api/reviews/:review_id", () => {
+  describe("GET /api/reviews/:review_id", () => {
     test("returns status 200 when a successful get request is made", () => {
       return request(app).get("/api/reviews/1").expect(200);
     });
@@ -97,7 +97,7 @@ describe("/api", () => {
                 category: "dexterity",
                 created_at: "2021-01-18T10:01:41.251Z",
                 votes: 5,
-                comment_count: "3",
+                comment_count: 3,
               })
             );
           });
@@ -122,7 +122,7 @@ describe("/api", () => {
                 category: "euro game",
                 created_at: expect.any(String),
                 votes: 1,
-                comment_count: "0",
+                comment_count: 0,
               })
             );
           });

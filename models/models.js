@@ -9,7 +9,7 @@ exports.fetchCategories = () => {
 exports.fetchReviewsById = (review_id) => {
   return db
     .query(
-      `SELECT reviews.*, COUNT(comments.review_id) AS comment_count FROM reviews LEFT OUTER JOIN comments ON comments.review_id = reviews.review_id WHERE reviews.review_id = $1 GROUP BY reviews.review_id;`,
+      `SELECT reviews.*, COUNT(comments.review_id):: INT AS comment_count FROM reviews LEFT OUTER JOIN comments ON comments.review_id = reviews.review_id WHERE reviews.review_id = $1 GROUP BY reviews.review_id;`,
       [review_id]
     )
     .then((review) => {
