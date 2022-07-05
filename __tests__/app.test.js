@@ -144,5 +144,7 @@ describe("/api", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
+    //test error: if inc_votes is sent as a string
+    //if inc_votes is missing: either 400 or no change to database
   });
 });

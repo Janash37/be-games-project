@@ -21,7 +21,7 @@ exports.fetchReviewsById = (review_id) => {
     });
 };
 
-exports.fetchReviewVotes = (review_id, inc_votes) => {
+exports.patchReviewVotes = (review_id, inc_votes) => {
   return db
     .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
     .then((review) => {
