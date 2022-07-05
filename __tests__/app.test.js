@@ -47,27 +47,104 @@ describe("/api", () => {
           body.review.forEach((review) => {
             expect(review).toEqual(
               expect.objectContaining({
-                review_id: expect.any(Number),
-                title: expect.any(String),
-                review_body: expect.any(String),
-                designer: expect.any(String),
-                review_img_url: expect.any(String),
-                votes: expect.any(Number),
-                category: expect.any(String),
-                owner: expect.any(String),
+                review_id: 1,
+                title: "Agricola",
+                designer: "Uwe Rosenberg",
+                owner: "mallionaire",
+                review_img_url:
+                  "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+                review_body: "Farmyard fun!",
+                category: "euro game",
                 created_at: expect.any(String),
+                votes: 1,
               })
             );
           });
         });
     });
-    test("returns status 400 when a bad request is made", () => {
+    test("returns status 404 when the path is not found", () => {
       return request(app)
-        .get("/api/reviews/0")
-        .expect(400)
+        .get("/api/reviews/1000")
+        .expect(404)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid query!");
+          expect(body.msg).toBe("404: path not found");
         });
     });
+    test("returns status 400 when a bad request is made", () => {
+      return request(app)
+        .get("/api/reviews/one")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+  });
+  describe("PATCH /api/reviews/:review_id", () => {
+    test("returns status 200 when a successful patch request is made (positive increment)", () => {
+      const updateReview = { inc_votes: 1 };
+
+      return request(app)
+        .patch("/api/reviews/1")
+        .send(updateReview)
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          const updatedReview = body.review;
+          expect(updatedReview).toEqual({
+            review_id: 1,
+            title: "Agricola",
+            designer: "Uwe Rosenberg",
+            owner: "mallionaire",
+            review_img_url:
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            review_body: "Farmyard fun!",
+            category: "euro game",
+            created_at: expect.any(String),
+            votes: 2,
+          });
+        });
+    });
+    test("returns status 200 when a successful patch request is made (decrement)", () => {
+      const updateReview = { inc_votes: -50 };
+
+      return request(app)
+        .patch("/api/reviews/1")
+        .send(updateReview)
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          const updatedReview = body.review;
+          expect(updatedReview).toEqual({
+            review_id: 1,
+            title: "Agricola",
+            designer: "Uwe Rosenberg",
+            owner: "mallionaire",
+            review_img_url:
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            review_body: "Farmyard fun!",
+            category: "euro game",
+            created_at: expect.any(String),
+            votes: -49,
+          });
+        });
+    });
+    test("returns status 404 when the path is not found", () => {
+      return request(app)
+        .patch("/api/reviews/1000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404: path not found");
+        });
+    });
+    test("returns status 400 when a bad request is made", () => {
+      return request(app)
+        .get("/api/reviews/one")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    //test error: if inc_votes is sent as a string
+    //if inc_votes is missing: either 400 or no change to database
   });
 });

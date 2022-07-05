@@ -14,5 +14,5 @@ Into each file, add PGDATABASE=<database_name_here>, with the correct database n
 to add to the file. If working on Linux or WSL, you will likely also need to add your PGUSER and PGPASSWORD
 data.
 
-Ensure that these .env files are .gitignored so that other uses cloning your own version of this repo (if
+Make sure that these .env files are .gitignored so that other uses cloning your own version of this repo (if
 it's public), won't have access to your own PG data.
