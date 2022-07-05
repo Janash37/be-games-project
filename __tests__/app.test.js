@@ -138,13 +138,11 @@ describe("/api", () => {
     });
     test("returns status 400 when a bad request is made", () => {
       return request(app)
-        .get("/api/reviews/one")
+        .patch("/api/reviews/one")
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid input");
         });
     });
-    //test error: if inc_votes is sent as a string
-    //if inc_votes is missing: either 400 or no change to database
   });
 });
