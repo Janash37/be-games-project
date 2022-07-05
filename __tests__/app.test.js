@@ -78,7 +78,58 @@ describe("/api", () => {
           expect(body.msg).toBe("Invalid input");
         });
     });
+    test("returns status 200 and a review object which also includes a comment_count property", () => {
+      return request(app)
+        .get("/api/reviews/2")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.review).toHaveLength(1);
+          body.review.forEach((review) => {
+            expect(review).toEqual(
+              expect.objectContaining({
+                review_id: 2,
+                title: "Jenga",
+                designer: "Leslie Scott",
+                owner: "philippaclaire9",
+                review_img_url:
+                  "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+                review_body: "Fiddly fun for all the family",
+                category: "dexterity",
+                created_at: "2021-01-18T10:01:41.251Z",
+                votes: 5,
+                comment_count: 3,
+              })
+            );
+          });
+        });
+    });
+    test("returns status 200 even when there are no comments for a review_id", () => {
+      return request(app)
+        .get("/api/reviews/1")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.review).toHaveLength(1);
+          body.review.forEach((review) => {
+            expect(review).toEqual(
+              expect.objectContaining({
+                review_id: 1,
+                title: "Agricola",
+                designer: "Uwe Rosenberg",
+                owner: "mallionaire",
+                review_img_url:
+                  "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+                review_body: "Farmyard fun!",
+                category: "euro game",
+                created_at: expect.any(String),
+                votes: 1,
+                comment_count: 0,
+              })
+            );
+          });
+        });
+    });
   });
+
   describe("PATCH /api/reviews/:review_id", () => {
     test("returns status 200 when a successful patch request is made (positive increment)", () => {
       const updateReview = { inc_votes: 1 };
