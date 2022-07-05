@@ -1,8 +1,10 @@
+
 const {
   fetchCategories,
   fetchReviewsById,
   fetchReviewVotes,
 } = require("../models/models");
+
 
 exports.getCategories = (req, res) => {
   fetchCategories()
@@ -22,6 +24,7 @@ exports.getReviewsById = (req, res, next) => {
     })
     .catch(next);
 };
+
 
 exports.updateReview = (req, res, next) => {
   const { review_d } = req.params;

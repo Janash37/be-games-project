@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
+
 const {
   getCategories,
   getReviewsById,
@@ -23,6 +24,12 @@ app.all("/*", (req, res) => {
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
     res.status(400).send({ msg: "Invalid input" });
+
+//ERROR-HANDLING MIDDLEWARE BELOW
+
+app.use((err, req, res, next) => {
+  if (err.msg && err.msg) {
+    res.status(err.status).send({ msg: err.msg });
   } else next(err);
 });
 
@@ -30,6 +37,7 @@ app.use((err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
     console.log(err.msg);
+
   } else next(err);
 });
 
