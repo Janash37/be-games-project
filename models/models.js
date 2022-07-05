@@ -32,25 +32,17 @@ exports.fetchUsers = (users) => {
 
 exports.fetchReviewComments = (review_id) => {
   const queryValues = [];
-  let queryStr = `SELECT * FROM comments`;
 
   if (review_id) {
-    queryStr += `WHERE review_id = $1`;
     queryValues.push(review_id);
   }
 
   return Promise.all([
-    db.query(queryStr, queryValues),
+    db.query(`SELECT * FROM comments WHERE review_id = $1;`, queryValues),
     this.checkReviewExists(review_id),
   ]).then(([{ rows }]) => {
     return rows;
   });
-  // return db
-  //   .query(`SELECT * FROM comments WHERE review_id = $1;`, [review_id])
-  //   .then((comments) => {
-  //     console.log(comments.rows);
-  //     return comments.rows;
-  //   });
 };
 
 exports.patchReviewVotes = (review_id, inc_votes) => {
@@ -73,11 +65,13 @@ exports.patchReviewVotes = (review_id, inc_votes) => {
 //FUNCTION: DOES THE REVIEW EXIST?
 
 exports.checkReviewExists = (review_id) => {
-  const queryStr = `SELECT * FROM reviews WHERE review_id = $1`;
   if (!review_id) return;
-  return db.query(queryStr, [review_id]).then(({ rowCount }) => {
-    if (rowCount === 0) {
-      return Promise.reject({ status: 404, msg: "404: review not found" });
-    }
-  });
+
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .then(({ rowCount }) => {
+      if (rowCount === 0) {
+        return Promise.reject({ status: 404, msg: "404: review not found" });
+      }
+    });
 };

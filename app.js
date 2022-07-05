@@ -26,7 +26,7 @@ app.all("/*", (req, res) => {
 
 app.use((err, req, res, next) => {
   console.log(err, "<<< inside PSQL error handler");
-  if (err.code === "22P02") {
+  if (err.code === "22P02" || err.code === "42601") {
     res.status(400).send({ msg: "Invalid input" });
   } else next(err);
 });

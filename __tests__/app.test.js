@@ -242,7 +242,7 @@ describe("/api", () => {
           });
         });
     });
-    test.only("returns status 404 when the path is not found", () => {
+    test("returns status 404 when the path is not found", () => {
       return request(app)
         .get("/api/reviews/1000/comments")
         .expect(404)
