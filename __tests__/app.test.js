@@ -145,7 +145,7 @@ describe("/api", () => {
         });
     });
   });
-  describe.only("GET /api/users", () => {
+  describe("GET /api/users", () => {
     test("returns status 200 when a successful get request is made", () => {
       return request(app).get("/api/users").expect(200);
     });
@@ -164,14 +164,6 @@ describe("/api", () => {
               })
             );
           });
-        });
-    });
-    test("returns status 400 when a bad request is made", () => {
-      return request(app)
-        .get("/api/users/1")
-        .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Invalid path");
         });
     });
   });
