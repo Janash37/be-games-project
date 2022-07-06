@@ -244,38 +244,86 @@ describe("/api", () => {
           });
         });
     });
-    test("responds with 200 and an array of reviews sorted by date by default", () => {
+    test("returns status 200 and an array of reviews sorted by date by default", () => {
       return request(app)
         .get("/api/reviews")
         .expect(200)
         .then((result) => {
-          console.log(result.body);
           const { reviews } = result.body;
           expect(reviews).toBeSortedBy("created_at", {
             descending: true,
-            coerce: true,
           });
         });
     });
-    test("responds with 200 and an array of reviews sorted by the given input", () => {
+    test("returns status 200 and an array of reviews sorted by the given input (default sort order)", () => {
       return request(app)
         .get("/api/reviews?sort_by=owner")
         .expect(200)
         .then((result) => {
-          console.log(result.body);
           const { reviews } = result.body;
           expect(reviews).toBeSortedBy("owner", {
             descending: true,
+          });
+        });
+    });
+    test("returns status 200 and an array of reviews in ascending order", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=title&order=asc")
+        .expect(200)
+        .then((result) => {
+          const { reviews } = result.body;
+          expect(reviews).toBeSortedBy("title", {
+            ascending: true,
             coerce: true,
           });
         });
     });
-    test("responds with 400 when given an invalid input", () => {
+    test("returns status 200 and an array of reviews after being filtered by category", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=designer&category=dexterity")
+        .expect(200)
+        .then((result) => {
+          const { reviews } = result.body;
+          expect(reviews).toBeSortedBy("review_id", {
+            ascending: true,
+            coerce: true,
+          });
+        });
+    });
+    test("returns status 200 and an array of reviews after being sorted and filtered by category", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=owner&order=asc&category=social deduction")
+        .expect(200)
+        .then((result) => {
+          const { reviews } = result.body;
+          expect(reviews).toBeSortedBy("owner", {
+            ascending: true,
+            coerce: true,
+          });
+        });
+    });
+    test("returns status 400 when given an invalid input", () => {
       return request(app)
         .get("/api/reviews?sort_by=weight")
         .expect(400)
         .then((result) => {
           expect(result.body.msg).toBe("400: invalid input");
+        });
+    });
+    test("returns status 400 when given an invalid order query", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=title&order=none")
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("400: invalid input");
+        });
+    });
+    test("returns status 404 when given a bad category query", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=owner&category=cheese")
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("404: category not found");
         });
     });
   });

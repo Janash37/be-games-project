@@ -34,14 +34,14 @@ exports.fetchUsers = (users) => {
 
 exports.fetchAllReviews = (
   sort_by = "created_at",
-  order = "DESC",
+  order = "desc",
   category
 ) => {
+  console.log(sort_by, order, category);
   const validColumns = [
     "title",
     "owner",
     "created_at",
-    "review_id",
     "review_body",
     "designer",
     "review_img_url",
@@ -60,13 +60,13 @@ exports.fetchAllReviews = (
     "euro game",
     "social deduction",
   ];
-  const validOrders = ["ASC", "DESC"];
+  const validOrders = ["asc", "desc"];
 
   if (!validColumns.includes(sort_by) || !validOrders.includes(order)) {
     return Promise.reject({ status: 400, msg: "400: invalid input" });
   }
 
-  let queryStr = `SELECT title, owner, reviews.created_at, reviews.review_body, designer, review_img_url, reviews.votes, category, COUNT(comment_id):: INT AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id`;
+  let queryStr = `SELECT title, owner, reviews.created_at, reviews.review_body, designer, review_img_url, reviews.votes, reviews.category, COUNT(comment_id):: INT AS comment_count FROM reviews LEFT JOIN comments ON comments.review_id = reviews.review_id`;
   const categoryValue = [];
   if (category) {
     if (!validCategories.includes(category)) {
@@ -80,7 +80,7 @@ exports.fetchAllReviews = (
 
   const orderVariable = ` ORDER BY ${sort_by} ` + order + ";";
   queryStr += orderVariable;
-
+  console.log(queryStr);
   return db.query(queryStr, categoryValue).then((reviews) => {
     return reviews.rows;
   });
