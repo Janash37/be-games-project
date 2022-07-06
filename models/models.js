@@ -73,6 +73,26 @@ exports.patchReviewVotes = (review_id, inc_votes) => {
     });
 };
 
+exports.postNewComment = (review_id, newComment) => {
+  const { username, body } = newComment;
+
+  if (!username || !body) {
+    return Promise.reject({
+      status: 400,
+      msg: "400: missing input value",
+    });
+  }
+
+  return db
+    .query(
+      `INSERT INTO comments (author, body, review_id) VALUES ($1, $2, $3) RETURNING *;`,
+      [username, body, review_id]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
+};
+
 //FUNCTION: DOES THE REVIEW EXIST?
 
 exports.checkReviewExists = (review_id) => {
