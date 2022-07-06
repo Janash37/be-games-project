@@ -361,8 +361,7 @@ describe("/api", () => {
         });
     });
   });
-});
-describe("GET /api/reviews/:review_id/comments", () => {
+  describe("GET /api/reviews/:review_id/comments", () => {
     test("returns status 200 when a successful get request is made", () => {
       return request(app).get("/api/reviews/1/comments").expect(200);
     });
@@ -384,7 +383,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
               })
             );
           });
-       });
+        });
     });
     test("returns status 404 when the path is not found", () => {
       return request(app)
@@ -401,6 +400,27 @@ describe("GET /api/reviews/:review_id/comments", () => {
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid input");
         });
-      });
-   });
+    });
+  });
+  describe("DELETE /api/comments/:comment_id", () => {
+    test("returns status 204 when a successful delete request is made", () => {
+      return request(app).delete("/api/comments/2").expect(204);
+    });
+    test("returns status 404 when passed a comment_id which does not exist", () => {
+      return request(app)
+        .delete("/api/comments/1000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404: comment not found");
+        });
+    });
+    test("returns status 400 when a bad request is made", () => {
+      return request(app)
+        .get("/api/comments/dog")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid path");
+        });
+    });
+  });
 });

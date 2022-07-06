@@ -6,6 +6,7 @@ const {
   fetchReviewComments,
   patchReviewVotes,
   postNewComment,
+  removeComment,
 } = require("../models/models");
 
 exports.getCategories = (req, res) => {
@@ -52,7 +53,7 @@ exports.getReviewComments = (req, res, next) => {
   fetchReviewComments(review_id)
     .then((comments) => {
       res.status(200).send({ comments });
-      })
+    })
     .catch((err) => {
       next(err);
     });
@@ -76,4 +77,15 @@ exports.addNewComment = (req, res, next) => {
       res.status(201).send({ comment });
     })
     .catch(next);
+};
+
+exports.deleteComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  removeComment(comment_id)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
