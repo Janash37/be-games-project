@@ -129,7 +129,6 @@ describe("/api", () => {
         });
     });
   });
-
   describe("PATCH /api/reviews/:review_id", () => {
     test("returns status 200 when a successful patch request is made (positive increment)", () => {
       const updateReview = { inc_votes: 1 };
@@ -264,5 +263,32 @@ describe("/api", () => {
           expect(body.msg).toBe("Invalid path");
         });
     });
+  });
+  describe.only("POST /api/reviews/:review_id/comments", () => {
+    test("returns status 200 when a successful post request is made", () => {
+      const newComment = {
+        username: "Steven Seagal",
+        body: "This is the greatest game ever made",
+      };
+
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({ body }) => {
+          console.log(body);
+          const updatedReview = body.review;
+          expect(updatedReview).toEqual({
+            //???
+            review_id: 1,
+            body: "This is the greatest game ever made",
+            author: "Steven Seagal",
+            created_at: expect.any(String),
+            votes: 0,
+          });
+        });
+    });
+    //test("responds with an object containing username and body props")
+    //test("responds with the posted comment")
   });
 });
