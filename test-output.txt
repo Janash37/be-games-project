@@ -1,4 +1,5 @@
 You are now connected to database "nc_games_test" as user "jan".
+
  comment_id |                                                       body                                                       | review_id |     author      | votes |       created_at       
 ------------+------------------------------------------------------------------------------------------------------------------+-----------+-----------------+-------+------------------------
           2 | My dog loved this game too!                                                                                      |         3 | mallionaire     |    13 | 2021-01-18 10:09:05.41

@@ -6,6 +6,7 @@ const {
   getCategories,
   getReviewsById,
   getUsers,
+  getReviews,
   getReviewComments,
   updateReview,
 } = require("./controllers/controllers");
@@ -16,7 +17,9 @@ app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewsById);
 app.get("/api/users", getUsers);
 app.get("/api/reviews/:review_id/comments", getReviewComments);
-app.patch("/api/reviews/:review_id", updateReview);
+app.get("/api/reviews", getReviews);
+app.patch("/api/reviews/:review_d", updateReview);
+
 
 //ERROR-HANDLING MIDDLEWARE BELOW
 
