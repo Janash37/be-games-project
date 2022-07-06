@@ -218,7 +218,7 @@ describe("/api", () => {
         });
     });
   });
-  describe.only("GET /api/reviews/:review_id/comments", () => {
+  describe("GET /api/reviews/:review_id/comments", () => {
     test("returns status 200 when a successful get request is made", () => {
       return request(app).get("/api/reviews/1/comments").expect(200);
     });
