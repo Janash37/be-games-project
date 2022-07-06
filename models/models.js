@@ -100,14 +100,24 @@ exports.removeComment = (comment_id) => {
   }
 
   return Promise.all([
-    this.checkCommentExists(comment_id),
-    db.query(`DELETE FROM comments WHERE comment_id = $1;`, queryValues),
-  ]).then(() => {
-    return;
-  });
+    db
+      .query(`SELECT * FROM comments WHERE comment_id = $1;`, [comment_id])
+      .then(({ rowCount }) => {
+        if (rowCount === 0) {
+          return Promise.reject({ status: 404, msg: "404: comment not found" });
+        } else {
+          db.query(
+            `DELETE FROM comments WHERE comment_id = $1 RETURNING*;`,
+            queryValues
+          ).then(() => {
+            return;
+          });
+        }
+      }),
+  ]);
 };
 
-//BELOW: DO REVIEWS AND COMMENTS EXIST?
+//BELOW: DOES REVIEW EXIST?
 
 exports.checkReviewExists = (review_id) => {
   if (!review_id) return;
@@ -117,18 +127,6 @@ exports.checkReviewExists = (review_id) => {
     .then(({ rowCount }) => {
       if (rowCount === 0) {
         return Promise.reject({ status: 404, msg: "404: review not found" });
-      }
-    });
-};
-
-exports.checkCommentExists = (comment_id) => {
-  if (!comment_id) return;
-
-  return db
-    .query(`SELECT * FROM comments WHERE comment_id = $1;`, [comment_id])
-    .then(({ rowCount }) => {
-      if (rowCount === 0) {
-        return Promise.reject({ status: 404, msg: "404: comment not found" });
       }
     });
 };

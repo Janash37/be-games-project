@@ -402,7 +402,7 @@ describe("/api", () => {
         });
     });
   });
-  describe("DELETE /api/comments/:comment_id", () => {
+  describe.only("DELETE /api/comments/:comment_id", () => {
     test("returns status 204 when a successful delete request is made", () => {
       return request(app).delete("/api/comments/2").expect(204);
     });
