@@ -8,6 +8,7 @@ const {
   getUsers,
   getReviews,
   updateReview,
+  addNewComment,
 } = require("./controllers/controllers");
 
 //ENDPOINT MIDDLEWARE BELOW
@@ -16,7 +17,8 @@ app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewsById);
 app.get("/api/users", getUsers);
 app.get("/api/reviews", getReviews);
-app.patch("/api/reviews/:review_d", updateReview);
+app.patch("/api/reviews/:review_id", updateReview);
+app.post("/api/reviews/:review_id/comments", addNewComment);
 
 //ERROR-HANDLING MIDDLEWARE BELOW
 
@@ -28,6 +30,8 @@ app.use((err, req, res, next) => {
   console.log(err, "<<< inside PSQL error handler");
   if (err.code === "22P02") {
     res.status(400).send({ msg: "Invalid input" });
+  } else if (err.code === "23503") {
+    res.status(404).send({ msg: "404: path not found" });
   } else next(err);
 });
 

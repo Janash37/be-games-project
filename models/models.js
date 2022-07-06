@@ -24,7 +24,6 @@ exports.fetchReviewsById = (review_id) => {
     });
 };
 
-
 exports.fetchUsers = (users) => {
   return db.query(`SELECT * FROM users`).then((users) => {
     return users.rows;
@@ -55,5 +54,25 @@ exports.patchReviewVotes = (review_id, inc_votes) => {
         selectedReview.votes += Number(inc_votes);
         return selectedReview;
       }
+    });
+};
+
+exports.postNewComment = (review_id, newComment) => {
+  const { username, body } = newComment;
+
+  if (!username || !body) {
+    return Promise.reject({
+      status: 400,
+      msg: "400: missing input value",
+    });
+  }
+
+  return db
+    .query(
+      `INSERT INTO comments (author, body, review_id) VALUES ($1, $2, $3) RETURNING *;`,
+      [username, body, review_id]
+    )
+    .then((result) => {
+      return result.rows[0];
     });
 };

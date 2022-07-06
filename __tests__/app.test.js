@@ -264,31 +264,101 @@ describe("/api", () => {
         });
     });
   });
-  describe.only("POST /api/reviews/:review_id/comments", () => {
-    test("returns status 200 when a successful post request is made", () => {
+  describe("POST /api/reviews/:review_id/comments", () => {
+    test("returns status 201 when a successful post request is made", () => {
       const newComment = {
-        username: "Steven Seagal",
+        username: "bainesface",
         body: "This is the greatest game ever made",
       };
-
       return request(app)
         .post("/api/reviews/1/comments")
         .send(newComment)
         .expect(201)
         .then(({ body }) => {
-          console.log(body);
-          const updatedReview = body.review;
+          const updatedReview = body.comment;
           expect(updatedReview).toEqual({
-            //???
             review_id: 1,
             body: "This is the greatest game ever made",
-            author: "Steven Seagal",
+            author: "bainesface",
             created_at: expect.any(String),
             votes: 0,
+            comment_id: 7,
           });
         });
     });
-    //test("responds with an object containing username and body props")
-    //test("responds with the posted comment")
+    test("returns status 201 and responds with the posted comment, which is an object", () => {
+      const newComment = {
+        username: "bainesface",
+        body: "This is the greatest game ever made",
+      };
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({ body }) => {
+          const updatedReview = body.comment;
+          expect(updatedReview).toEqual(
+            expect.objectContaining({
+              review_id: expect.any(Number),
+              body: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_id: expect.any(Number),
+            })
+          );
+        });
+    });
+    test("returns status 404 when the path is not found", () => {
+      const newComment = {
+        username: "bainesface",
+        body: "This is the greatest game ever made",
+      };
+      return request(app)
+        .post("/api/reviews/1000/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404: path not found");
+        });
+    });
+    test("returns status 404 when the given username is not found", () => {
+      const newComment = {
+        username: "doug",
+        body: "This is the greatest game ever made",
+      };
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send(newComment)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404: path not found");
+        });
+    });
+    test("returns status 400 when a bad request or invalid id is made", () => {
+      const newComment = {
+        username: "bainesface",
+        body: "This is the greatest game ever made",
+      };
+      return request(app)
+        .post("/api/reviews/two/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    test("returns status 400 when a field is missing, e.g. no username or", () => {
+      const newComment = {
+        username: "bainesface",
+      };
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("400: missing input value");
+        });
+    });
   });
 });
