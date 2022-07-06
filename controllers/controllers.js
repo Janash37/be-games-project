@@ -38,7 +38,8 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.getReviews = (req, res, next) => {
-  fetchAllReviews()
+  const { sort_by, order, category } = req.query;
+  fetchAllReviews(sort_by, order, category)
     .then((reviews) => {
       res.status(200).send({ reviews });
     })
@@ -52,7 +53,7 @@ exports.getReviewComments = (req, res, next) => {
   fetchReviewComments(review_id)
     .then((comments) => {
       res.status(200).send({ comments });
-      })
+    })
     .catch((err) => {
       next(err);
     });

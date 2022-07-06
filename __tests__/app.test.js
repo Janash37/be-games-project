@@ -75,7 +75,7 @@ describe("/api", () => {
         .get("/api/reviews/one")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid input");
+          expect(body.msg).toBe("400: invalid input");
         });
     });
     test("returns status 200 and a review object which also includes a comment_count property", () => {
@@ -191,7 +191,7 @@ describe("/api", () => {
         .patch("/api/reviews/one")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid input");
+          expect(body.msg).toBe("400: invalid input");
         });
     });
   });
@@ -244,23 +244,38 @@ describe("/api", () => {
           });
         });
     });
-    test("returns status 200 and an array of review objects which are sorted in date descending order", () => {
+    test("responds with 200 and an array of reviews sorted by date by default", () => {
       return request(app)
         .get("/api/reviews")
         .expect(200)
-        .then(({ body }) => {
-          expect(body.reviews).toBeSortedBy("created_at", {
+        .then((result) => {
+          console.log(result.body);
+          const { reviews } = result.body;
+          expect(reviews).toBeSortedBy("created_at", {
             descending: true,
             coerce: true,
           });
         });
     });
-    test("returns status 400 when the path is not found", () => {
+    test("responds with 200 and an array of reviews sorted by the given input", () => {
       return request(app)
-        .get("/api/review")
+        .get("/api/reviews?sort_by=owner")
+        .expect(200)
+        .then((result) => {
+          console.log(result.body);
+          const { reviews } = result.body;
+          expect(reviews).toBeSortedBy("owner", {
+            descending: true,
+            coerce: true,
+          });
+        });
+    });
+    test("responds with 400 when given an invalid input", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=weight")
         .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Invalid path");
+        .then((result) => {
+          expect(result.body.msg).toBe("400: invalid input");
         });
     });
   });
@@ -345,7 +360,7 @@ describe("/api", () => {
         .send(newComment)
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid input");
+          expect(body.msg).toBe("400: invalid input");
         });
     });
     test("returns status 400 when a field is missing, e.g. no username or", () => {
@@ -361,8 +376,7 @@ describe("/api", () => {
         });
     });
   });
-});
-describe("GET /api/reviews/:review_id/comments", () => {
+  describe("GET /api/reviews/:review_id/comments", () => {
     test("returns status 200 when a successful get request is made", () => {
       return request(app).get("/api/reviews/1/comments").expect(200);
     });
@@ -384,7 +398,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
               })
             );
           });
-       });
+        });
     });
     test("returns status 404 when the path is not found", () => {
       return request(app)
@@ -399,8 +413,8 @@ describe("GET /api/reviews/:review_id/comments", () => {
         .get("/api/reviews/bananas/comments")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid input");
+          expect(body.msg).toBe("400: invalid input");
         });
-      });
-   });
+    });
+  });
 });
