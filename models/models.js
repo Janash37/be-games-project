@@ -38,6 +38,22 @@ exports.fetchAllReviews = () => {
     .then((reviews) => {
       return reviews.rows;
     });
+
+};
+
+exports.fetchReviewComments = (review_id) => {
+  const queryValues = [];
+
+  if (review_id) {
+    queryValues.push(review_id);
+  }
+
+  return Promise.all([
+    db.query(`SELECT * FROM comments WHERE review_id = $1;`, queryValues),
+    this.checkReviewExists(review_id),
+  ]).then(([{ rows }]) => {
+    return rows;
+  });
 };
 
 exports.patchReviewVotes = (review_id, inc_votes) => {
@@ -74,5 +90,19 @@ exports.postNewComment = (review_id, newComment) => {
     )
     .then((result) => {
       return result.rows[0];
+    });
+};
+
+//FUNCTION: DOES THE REVIEW EXIST?
+
+exports.checkReviewExists = (review_id) => {
+  if (!review_id) return;
+
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .then(({ rowCount }) => {
+      if (rowCount === 0) {
+        return Promise.reject({ status: 404, msg: "404: review not found" });
+      }
     });
 };

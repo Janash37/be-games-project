@@ -3,6 +3,7 @@ const {
   fetchReviewsById,
   fetchUsers,
   fetchAllReviews,
+  fetchReviewComments,
   patchReviewVotes,
   postNewComment,
 } = require("../models/models");
@@ -41,6 +42,17 @@ exports.getReviews = (req, res, next) => {
     .then((reviews) => {
       res.status(200).send({ reviews });
     })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getReviewComments = (req, res, next) => {
+  const { review_id } = req.params;
+  fetchReviewComments(review_id)
+    .then((comments) => {
+      res.status(200).send({ comments });
+      })
     .catch((err) => {
       next(err);
     });
