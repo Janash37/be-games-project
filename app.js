@@ -7,6 +7,7 @@ const {
   getReviewsById,
   getUsers,
   getReviews,
+  getReviewComments,
   updateReview,
 } = require("./controllers/controllers");
 
@@ -15,8 +16,10 @@ const {
 app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewsById);
 app.get("/api/users", getUsers);
+app.get("/api/reviews/:review_id/comments", getReviewComments);
 app.get("/api/reviews", getReviews);
 app.patch("/api/reviews/:review_d", updateReview);
+
 
 //ERROR-HANDLING MIDDLEWARE BELOW
 
@@ -26,7 +29,7 @@ app.all("/*", (req, res) => {
 
 app.use((err, req, res, next) => {
   console.log(err, "<<< inside PSQL error handler");
-  if (err.code === "22P02") {
+  if (err.code === "22P02" || err.code === "42601") {
     res.status(400).send({ msg: "Invalid input" });
   } else next(err);
 });
