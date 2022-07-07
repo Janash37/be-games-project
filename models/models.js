@@ -1,5 +1,6 @@
 const { query } = require("../db/connection");
 const db = require("../db/connection");
+const fs = require("fs");
 const { sort } = require("../db/data/test-data/categories");
 
 exports.fetchCategories = () => {
@@ -86,20 +87,6 @@ exports.fetchAllReviews = (
   });
 };
 
-//   let queryStr = `SELECT reviews.*, COUNT(comments.review_id):: INT AS comment_count FROM reviews LEFT OUTER JOIN comments ON comments.review_id = reviews.review_id GROUP BY reviews.review_id `;
-//   const queryValues = [];
-//   if (sort_by) {
-//     queryValues.push(sort_by);
-//     queryValues.push(order);
-//     queryStr += `ORDER BY $1, $2`;
-//   }
-
-//   return Promise.all([db.query(queryStr, queryValues)]).then(([rows]) => {
-//     console.log(queryStr);
-//     return rows;
-//   });
-// };
-
 exports.fetchReviewComments = (review_id) => {
   const queryValues = [];
 
@@ -175,6 +162,12 @@ exports.removeComment = (comment_id) => {
         }
       }),
   ]);
+};
+
+exports.fetchAllEndpoints = () => {
+  const endpointsFile = fs.readFileSync("./endpoints.json");
+  const parsed = JSON.parse(endpointsFile);
+  return parsed;
 };
 
 //BELOW: DOES THE REVIEW EXIST?

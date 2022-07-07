@@ -7,6 +7,8 @@ const {
   patchReviewVotes,
   postNewComment,
   removeComment,
+  fetchAllEndpoints,
+
 } = require("../models/models");
 
 exports.getCategories = (req, res) => {
@@ -79,6 +81,11 @@ exports.addNewComment = (req, res, next) => {
       res.status(201).send({ comment });
     })
     .catch(next);
+};
+
+exports.getAllEndpoints = (req, res, next) => {
+  const endpoints = fetchAllEndpoints();
+  res.status(200).send(endpoints);
 };
 
 exports.deleteComment = (req, res, next) => {
