@@ -39,7 +39,9 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.getReviews = (req, res, next) => {
-  fetchAllReviews()
+  const { sort_by, order, category } = req.query;
+  console.log(sort_by, order, category);
+  fetchAllReviews(sort_by, order, category)
     .then((reviews) => {
       res.status(200).send({ reviews });
     })

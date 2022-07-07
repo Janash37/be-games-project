@@ -75,7 +75,7 @@ describe("/api", () => {
         .get("/api/reviews/one")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid input");
+          expect(body.msg).toBe("400: invalid input");
         });
     });
     test("returns status 200 and a review object which also includes a comment_count property", () => {
@@ -191,7 +191,7 @@ describe("/api", () => {
         .patch("/api/reviews/one")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid input");
+          expect(body.msg).toBe("400: invalid input");
         });
     });
   });
@@ -244,23 +244,86 @@ describe("/api", () => {
           });
         });
     });
-    test("returns status 200 and an array of review objects which are sorted in date descending order", () => {
+    test("returns status 200 and an array of reviews sorted by date by default", () => {
       return request(app)
         .get("/api/reviews")
         .expect(200)
-        .then(({ body }) => {
-          expect(body.reviews).toBeSortedBy("created_at", {
+        .then((result) => {
+          const { reviews } = result.body;
+          expect(reviews).toBeSortedBy("created_at", {
             descending: true,
+          });
+        });
+    });
+    test("returns status 200 and an array of reviews sorted by the given input (default sort order)", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=owner")
+        .expect(200)
+        .then((result) => {
+          const { reviews } = result.body;
+          expect(reviews).toBeSortedBy("owner", {
+            descending: true,
+          });
+        });
+    });
+    test("returns status 200 and an array of reviews in ascending order", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=title&order=asc")
+        .expect(200)
+        .then((result) => {
+          const { reviews } = result.body;
+          expect(reviews).toBeSortedBy("title", {
+            ascending: true,
             coerce: true,
           });
         });
     });
-    test("returns status 400 when the path is not found", () => {
+    test("returns status 200 and an array of reviews after being filtered by category", () => {
       return request(app)
-        .get("/api/review")
+        .get("/api/reviews?sort_by=designer&category=dexterity")
+        .expect(200)
+        .then((result) => {
+          const { reviews } = result.body;
+          expect(reviews).toBeSortedBy("review_id", {
+            ascending: true,
+            coerce: true,
+          });
+        });
+    });
+    test("returns status 200 and an array of reviews after being sorted and filtered by category", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=owner&order=asc&category=social deduction")
+        .expect(200)
+        .then((result) => {
+          const { reviews } = result.body;
+          expect(reviews).toBeSortedBy("owner", {
+            ascending: true,
+            coerce: true,
+          });
+        });
+    });
+    test("returns status 400 when given an invalid input", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=weight")
         .expect(400)
-        .then(({ body }) => {
-          expect(body.msg).toBe("Invalid path");
+        .then((result) => {
+          expect(result.body.msg).toBe("400: invalid input");
+        });
+    });
+    test("returns status 400 when given an invalid order query", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=title&order=none")
+        .expect(400)
+        .then((result) => {
+          expect(result.body.msg).toBe("400: invalid input");
+        });
+    });
+    test("returns status 404 when given a bad category query", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=owner&category=cheese")
+        .expect(404)
+        .then((result) => {
+          expect(result.body.msg).toBe("404: category not found");
         });
     });
   });
@@ -345,7 +408,7 @@ describe("/api", () => {
         .send(newComment)
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid input");
+          expect(body.msg).toBe("400: invalid input");
         });
     });
     test("returns status 400 when a field is missing, e.g. no username or", () => {
@@ -398,10 +461,11 @@ describe("/api", () => {
         .get("/api/reviews/bananas/comments")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid input");
+          expect(body.msg).toBe("400: invalid input");
         });
     });
   });
+
   describe("DELETE /api/comments/:comment_id", () => {
     test("returns status 204 when a successful delete request is made", () => {
       return request(app).delete("/api/comments/2").expect(204);
