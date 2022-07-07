@@ -10,6 +10,7 @@ const {
   getReviewComments,
   updateReview,
   addNewComment,
+  deleteComment,
   getAllEndpoints,
 } = require("./controllers/controllers");
 
@@ -22,6 +23,7 @@ app.get("/api/reviews/:review_id/comments", getReviewComments);
 app.get("/api/reviews", getReviews);
 app.patch("/api/reviews/:review_id", updateReview);
 app.post("/api/reviews/:review_id/comments", addNewComment);
+app.delete("/api/comments/:comment_id", deleteComment);
 app.get("/api", getAllEndpoints);
 
 //ERROR-HANDLING MIDDLEWARE BELOW
@@ -33,7 +35,7 @@ app.all("/*", (req, res) => {
 app.use((err, req, res, next) => {
   console.log(err, "<<< inside PSQL error handler");
   if (err.code === "22P02" || err.code === "42601") {
-    res.status(400).send({ msg: "Invalid input" });
+    res.status(400).send({ msg: "400: invalid input" });
   } else if (err.code === "23503") {
     res.status(404).send({ msg: "404: path not found" });
   } else next(err);
