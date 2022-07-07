@@ -361,8 +361,7 @@ describe("/api", () => {
         });
     });
   });
-});
-describe("GET /api/reviews/:review_id/comments", () => {
+  describe("GET /api/reviews/:review_id/comments", () => {
     test("returns status 200 when a successful get request is made", () => {
       return request(app).get("/api/reviews/1/comments").expect(200);
     });
@@ -384,7 +383,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
               })
             );
           });
-       });
+        });
     });
     test("returns status 404 when the path is not found", () => {
       return request(app)
@@ -401,6 +400,27 @@ describe("GET /api/reviews/:review_id/comments", () => {
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid input");
         });
-      });
-   });
+    });
+  });
+  describe("GET /api", () => {
+    test("returns status 200 when a successful get request is made", () => {
+      return request(app).get("/api").expect(200);
+    });
+    test("returns status 200 and responds with a JSON object describing all available endpoints, on a successful get request", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          expect(typeof body).toBe("object");
+          expect(body).toHaveProperty("GET /api");
+          expect(body).toHaveProperty("GET /api/categories");
+          expect(body).toHaveProperty("GET /api/reviews");
+          expect(body).toHaveProperty("GET /api/reviews/:review_id");
+          expect(body).toHaveProperty("GET /api/reviews/:review_id/comments");
+          expect(body).toHaveProperty("GET /api/users");
+          expect(body).toHaveProperty("PATCH /api/reviews/:review_id");
+          expect(body).toHaveProperty("POST /api/reviews/:review_id/comments");
+        });
+    });
+  });
 });

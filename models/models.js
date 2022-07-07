@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const fs = require("fs");
 
 exports.fetchCategories = () => {
   return db.query(`SELECT * FROM categories`).then((categories) => {
@@ -38,7 +39,6 @@ exports.fetchAllReviews = () => {
     .then((reviews) => {
       return reviews.rows;
     });
-
 };
 
 exports.fetchReviewComments = (review_id) => {
@@ -91,6 +91,12 @@ exports.postNewComment = (review_id, newComment) => {
     .then((result) => {
       return result.rows[0];
     });
+};
+
+exports.fetchAllEndpoints = () => {
+  const endpointsFile = fs.readFileSync("./endpoints.json");
+  const parsed = JSON.parse(endpointsFile);
+  return parsed;
 };
 
 //FUNCTION: DOES THE REVIEW EXIST?
