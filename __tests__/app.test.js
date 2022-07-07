@@ -465,4 +465,26 @@ describe("/api", () => {
         });
     });
   });
+
+  describe("DELETE /api/comments/:comment_id", () => {
+    test("returns status 204 when a successful delete request is made", () => {
+      return request(app).delete("/api/comments/2").expect(204);
+    });
+    test("returns status 404 when passed a comment_id which does not exist", () => {
+      return request(app)
+        .delete("/api/comments/1000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404: comment not found");
+        });
+    });
+    test("returns status 400 when a bad request is made", () => {
+      return request(app)
+        .get("/api/comments/dog")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid path");
+        });
+    });
+  });
 });

@@ -152,6 +152,31 @@ exports.postNewComment = (review_id, newComment) => {
     });
 };
 
+exports.removeComment = (comment_id) => {
+  const queryValues = [];
+
+  if (comment_id) {
+    queryValues.push(comment_id);
+  }
+
+  return Promise.all([
+    db
+      .query(`SELECT * FROM comments WHERE comment_id = $1;`, [comment_id])
+      .then(({ rowCount }) => {
+        if (rowCount === 0) {
+          return Promise.reject({ status: 404, msg: "404: comment not found" });
+        } else {
+          db.query(
+            `DELETE FROM comments WHERE comment_id = $1 RETURNING*;`,
+            queryValues
+          ).then(() => {
+            return;
+          });
+        }
+      }),
+  ]);
+};
+
 //BELOW: DOES THE REVIEW EXIST?
 
 exports.checkReviewExists = (review_id) => {

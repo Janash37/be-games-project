@@ -10,6 +10,7 @@ const {
   getReviewComments,
   updateReview,
   addNewComment,
+  deleteComment,
 } = require("./controllers/controllers");
 
 //ENDPOINT MIDDLEWARE BELOW
@@ -21,6 +22,8 @@ app.get("/api/reviews/:review_id/comments", getReviewComments);
 app.get("/api/reviews", getReviews);
 app.patch("/api/reviews/:review_id", updateReview);
 app.post("/api/reviews/:review_id/comments", addNewComment);
+app.delete("/api/comments/:comment_id", deleteComment);
+
 
 //ERROR-HANDLING MIDDLEWARE BELOW
 
