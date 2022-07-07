@@ -1,7 +1,5 @@
-const { query } = require("../db/connection");
 const db = require("../db/connection");
 const fs = require("fs");
-const { sort } = require("../db/data/test-data/categories");
 
 exports.fetchCategories = () => {
   return db.query(`SELECT * FROM categories`).then((categories) => {

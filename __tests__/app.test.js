@@ -13,7 +13,7 @@ afterAll(() => {
 });
 
 describe("/api", () => {
-  describe("GET /api/categories", () => {
+  describe.only("GET /api/categories", () => {
     test("returns status 200 when a successful get request is made", () => {
       return request(app).get("/api/categories").expect(200);
     });
