@@ -592,7 +592,7 @@ describe("/api", () => {
         });
     });
   });
-  describe.only("POST /api/reviews", () => {
+  describe("POST /api/reviews", () => {
     test("returns status 201 when a successful post request is made", () => {
       const newReview = {
         owner: "bainesface",
