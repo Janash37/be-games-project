@@ -169,6 +169,26 @@ exports.postNewComment = (review_id, newComment) => {
     });
 };
 
+exports.postNewReview = (newReview) => {
+  const { owner, title, review_body, designer, category } = newReview;
+
+  if (!owner || !review_body || !title || !designer || !category) {
+    return Promise.reject({
+      status: 400,
+      msg: "400: missing input value",
+    });
+  }
+
+  return db
+    .query(
+      `INSERT INTO reviews (owner, title, review_body, designer, category) VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
+      [owner, title, review_body, designer, category]
+    )
+    .then((result) => {
+      return result.rows[0];
+    });
+};
+
 exports.removeComment = (comment_id) => {
   const queryValues = [];
 

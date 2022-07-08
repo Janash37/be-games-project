@@ -8,6 +8,7 @@ const {
   patchReviewVotes,
   patchCommentVotes,
   postNewComment,
+  postNewReview,
   removeComment,
   fetchAllEndpoints,
 } = require("../models/models");
@@ -81,6 +82,15 @@ exports.updateReview = (req, res, next) => {
   patchReviewVotes(review_id, inc_votes)
     .then((review) => {
       res.status(200).send({ review });
+    })
+    .catch(next);
+};
+
+exports.addNewReview = (req, res, next) => {
+  const newReview = req.body;
+  postNewReview(newReview)
+    .then((review) => {
+      res.status(201).send({ review });
     })
     .catch(next);
 };

@@ -592,4 +592,62 @@ describe("/api", () => {
         });
     });
   });
+  describe.only("POST /api/reviews", () => {
+    test("returns status 201 when a successful post request is made", () => {
+      const newReview = {
+        owner: "bainesface",
+        title: "Spongebob",
+        review_body: "The GOAT",
+        designer: "Jonathan Smith",
+        category: "euro game",
+      };
+      return request(app)
+        .post("/api/reviews")
+        .send(newReview)
+        .expect(201)
+        .then(({ body }) => {
+          const newRev = body.review;
+          console.log(newRev);
+          expect(newRev).toEqual({
+            owner: "bainesface",
+            title: "Spongebob",
+            review_body: "The GOAT",
+            designer: "Jonathan Smith",
+            category: "euro game",
+            review_id: expect.any(Number),
+            created_at: expect.any(String),
+            votes: 0,
+            review_img_url: expect.any(String),
+          });
+        });
+    });
+    test("returns status 201 and responds with the posted review, which is an object", () => {
+      const newReview = {
+        owner: "bainesface",
+        title: "Spongebob",
+        review_body: "The GOAT",
+        designer: "Jonathan Smith",
+        category: "euro game",
+      };
+      return request(app)
+        .post("/api/reviews")
+        .send(newReview)
+        .expect(201)
+        .then(({ body }) => {
+          const newRev = body.review;
+          console.log(newRev);
+          expect(newRev).toEqual({
+            owner: "bainesface",
+            title: "Spongebob",
+            review_body: "The GOAT",
+            designer: "Jonathan Smith",
+            category: "euro game",
+            review_id: expect.any(Number),
+            created_at: expect.any(String),
+            votes: 0,
+            review_img_url: expect.any(String),
+          });
+        });
+    });
+  });
 });

@@ -11,6 +11,7 @@ const {
   getAllUsers,
   getUser,
   updateReview,
+  addNewReview,
   updateCommentVotes,
   addNewComment,
   deleteComment,
@@ -30,6 +31,7 @@ app.patch("/api/reviews/:review_id", updateReview);
 app.patch("/api/comments/:comment_id", updateCommentVotes);
 
 app.post("/api/reviews/:review_id/comments", addNewComment);
+app.post("/api/reviews", addNewReview);
 
 app.delete("/api/comments/:comment_id", deleteComment);
 
