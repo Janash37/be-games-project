@@ -6,6 +6,7 @@ const {
   fetchAllReviews,
   fetchReviewComments,
   patchReviewVotes,
+  patchCommentVotes,
   postNewComment,
   removeComment,
   fetchAllEndpoints,
@@ -80,6 +81,16 @@ exports.updateReview = (req, res, next) => {
   patchReviewVotes(review_id, inc_votes)
     .then((review) => {
       res.status(200).send({ review });
+    })
+    .catch(next);
+};
+
+exports.updateCommentVotes = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  patchCommentVotes(comment_id, inc_votes)
+    .then((comment) => {
+      res.status(200).send({ comment });
     })
     .catch(next);
 };

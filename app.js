@@ -3,16 +3,17 @@ const app = express();
 app.use(express.json());
 
 const {
-  getCategories,
+  getAllEndpoints,
+  getReviews,
   getReviewsById,
+  getReviewComments,
+  getCategories,
   getAllUsers,
   getUser,
-  getReviews,
-  getReviewComments,
   updateReview,
+  updateCommentVotes,
   addNewComment,
   deleteComment,
-  getAllEndpoints,
 } = require("./controllers/controllers");
 
 //ENDPOINT MIDDLEWARE BELOW
@@ -26,6 +27,7 @@ app.get("/api/users", getAllUsers);
 app.get("/api/users/:username", getUser);
 
 app.patch("/api/reviews/:review_id", updateReview);
+app.patch("/api/comments/:comment_id", updateCommentVotes);
 
 app.post("/api/reviews/:review_id/comments", addNewComment);
 

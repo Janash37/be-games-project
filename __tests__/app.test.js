@@ -138,7 +138,6 @@ describe("/api", () => {
         .send(updateReview)
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           const updatedReview = body.review;
           expect(updatedReview).toEqual({
             review_id: 1,
@@ -162,7 +161,6 @@ describe("/api", () => {
         .send(updateReview)
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           const updatedReview = body.review;
           expect(updatedReview).toEqual({
             review_id: 1,
@@ -535,6 +533,62 @@ describe("/api", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("404: username not found");
+        });
+    });
+  });
+  describe("PATCH /api/comments/:comment_id", () => {
+    test("returns status 200 when a successful patch request is made (positive increment)", () => {
+      const updateVotes = { inc_votes: 1 };
+
+      return request(app)
+        .patch("/api/comments/5")
+        .send(updateVotes)
+        .expect(200)
+        .then(({ body }) => {
+          const updatedComment = body.comment;
+          expect(updatedComment).toEqual({
+            comment_id: 5,
+            body: "Now this is a story all about how, board games turned my life upside down",
+            votes: 14,
+            author: "mallionaire",
+            review_id: 2,
+            created_at: expect.any(String),
+          });
+        });
+    });
+    test("returns status 200 when a successful patch request is made (decrement)", () => {
+      const updateVotes = { inc_votes: -50 };
+
+      return request(app)
+        .patch("/api/comments/5")
+        .send(updateVotes)
+        .expect(200)
+        .then(({ body }) => {
+          const updatedComment = body.comment;
+          expect(updatedComment).toEqual({
+            comment_id: 5,
+            body: "Now this is a story all about how, board games turned my life upside down",
+            votes: -37,
+            author: "mallionaire",
+            review_id: 2,
+            created_at: expect.any(String),
+          });
+        });
+    });
+    test("returns status 404 when the path is not found", () => {
+      return request(app)
+        .patch("/api/comments/1000")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404: comment not found");
+        });
+    });
+    test("returns status 400 when a bad request is made", () => {
+      return request(app)
+        .patch("/api/reviews/eleven")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("400: invalid input");
         });
     });
   });
