@@ -13,7 +13,7 @@ afterAll(() => {
 });
 
 describe("/api", () => {
-  describe.only("GET /api/categories", () => {
+  describe("GET /api/categories", () => {
     test("returns status 200 when a successful get request is made", () => {
       return request(app).get("/api/categories").expect(200);
     });
@@ -465,7 +465,6 @@ describe("/api", () => {
         });
     });
   });
-
   describe("DELETE /api/comments/:comment_id", () => {
     test("returns status 204 when a successful delete request is made", () => {
       return request(app).delete("/api/comments/2").expect(204);
@@ -487,7 +486,6 @@ describe("/api", () => {
         });
     });
   });
-
   describe("GET /api", () => {
     test("returns status 200 when a successful get request is made", () => {
       return request(app).get("/api").expect(200);
@@ -506,6 +504,37 @@ describe("/api", () => {
           expect(body).toHaveProperty("GET /api/users");
           expect(body).toHaveProperty("PATCH /api/reviews/:review_id");
           expect(body).toHaveProperty("POST /api/reviews/:review_id/comments");
+        });
+    });
+  });
+  describe("GET /api/users/:username", () => {
+    test("returns status 200 when a successful get request is made", () => {
+      return request(app).get("/api/users/mallionaire").expect(200);
+    });
+    test("returns status 200 and a user object, with username, avatar_url and name properties", () => {
+      return request(app)
+        .get("/api/users/mallionaire")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toHaveLength(1);
+          body.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: "mallionaire",
+                name: "haz",
+                avatar_url:
+                  "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+              })
+            );
+          });
+        });
+    });
+    test("returns status 404 when the username is not found", () => {
+      return request(app)
+        .get("/api/users/john")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("404: username not found");
         });
     });
   });

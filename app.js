@@ -5,7 +5,8 @@ app.use(express.json());
 const {
   getCategories,
   getReviewsById,
-  getUsers,
+  getAllUsers,
+  getUser,
   getReviews,
   getReviewComments,
   updateReview,
@@ -16,15 +17,19 @@ const {
 
 //ENDPOINT MIDDLEWARE BELOW
 
-app.get("/api/categories", getCategories);
-app.get("/api/reviews/:review_id", getReviewsById);
-app.get("/api/users", getUsers);
-app.get("/api/reviews/:review_id/comments", getReviewComments);
-app.get("/api/reviews", getReviews);
-app.patch("/api/reviews/:review_id", updateReview);
-app.post("/api/reviews/:review_id/comments", addNewComment);
-app.delete("/api/comments/:comment_id", deleteComment);
 app.get("/api", getAllEndpoints);
+app.get("/api/reviews", getReviews);
+app.get("/api/reviews/:review_id", getReviewsById);
+app.get("/api/reviews/:review_id/comments", getReviewComments);
+app.get("/api/categories", getCategories);
+app.get("/api/users", getAllUsers);
+app.get("/api/users/:username", getUser);
+
+app.patch("/api/reviews/:review_id", updateReview);
+
+app.post("/api/reviews/:review_id/comments", addNewComment);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 //ERROR-HANDLING MIDDLEWARE BELOW
 

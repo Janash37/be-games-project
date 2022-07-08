@@ -1,7 +1,8 @@
 const {
   fetchCategories,
   fetchReviewsById,
-  fetchUsers,
+  fetchAllUsers,
+  fetchUser,
   fetchAllReviews,
   fetchReviewComments,
   patchReviewVotes,
@@ -29,10 +30,21 @@ exports.getReviewsById = (req, res, next) => {
     .catch(next);
 };
 
-exports.getUsers = (req, res, next) => {
-  fetchUsers()
+exports.getAllUsers = (req, res, next) => {
+  fetchAllUsers()
     .then((users) => {
       res.status(200).send({ users });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getUser = (req, res, next) => {
+  const { username } = req.params;
+  fetchUser(username)
+    .then((user) => {
+      res.status(200).send(user);
     })
     .catch((err) => {
       next(err);
